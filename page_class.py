@@ -5,3 +5,17 @@ class web_page:
 		self.title = title
 		self.parent = parent
 
+
+	@property
+	def asDict(self):
+		d = self.__dict__
+		#print(d)
+		return d
+
+
+class pages:
+	def __init__(self):
+		self.visited = list()
+
+
+	
