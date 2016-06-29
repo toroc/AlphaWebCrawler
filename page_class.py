@@ -23,6 +23,11 @@ class pages:
     def __init__(self):
         self.visited = list()
 
+    @property
+    def add_visited(self, page):
+        return self.visited.add(page)
+    
+
 
     
 class crawl_options:
@@ -39,3 +44,19 @@ class crawl_class:
         self.pages = pages()
         self.url_q = queue.Queue()
         self.visited_set = set()
+
+    @property
+    def dequeue(self):
+        return self.url_q.get()
+
+    @property
+    def enqueue(self, url):
+        return self.url_q.put(url)
+
+    @property
+    def addSet(self, url):
+        return self.visited_set.add(url)
+    
+    
+    
+    
