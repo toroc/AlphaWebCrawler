@@ -4,8 +4,6 @@ The flask application package.
 import logging
 from flask import Flask, current_app, redirect, url_for, session
 import config
-
-
 def create_app(config, debug=False, testing=False, config_overrides=None):
     app = Flask(__name__)
     app.config.from_object(config)
@@ -28,7 +26,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
 
     return app
 
-app = create_app(config)
+#app = create_app(config)
 # def get_model():
 #     model_backend = current_app.config['DATA_BACKEND']
 #     if model_backend == 'cloudsql':
@@ -46,5 +44,6 @@ app = create_app(config)
 #             "Please specify datastore, cloudsql, or mongodb")
 
 #     return model
+app = create_app(config)
 
-import crawlerUI.views
+

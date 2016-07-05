@@ -1,10 +1,9 @@
 """
 Routes and views for the flask application.
 """
-import imp
+from crawlerUI import app
 from datetime import datetime
 from flask import render_template
-from main import app
 
 
 @app.route('/')
