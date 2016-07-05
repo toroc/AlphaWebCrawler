@@ -12,12 +12,12 @@ class WebPage(object):
         self.children = children
 
     
-    def asDict(self):
+    def as_dict(self):
         return self.__dict__
         #print(d)
         #return d
     def page_info(self):
-        return self.asDict()
+        return self.as_dict()
 
 
 class Pages(object):
@@ -25,7 +25,7 @@ class Pages(object):
     def __init__(self):
         self.visited = list()
     
-    def asDict(self):
+    def as_dict(self):
         return self.__dict__
 
     def track(self, web_page_obj):
@@ -33,7 +33,7 @@ class Pages(object):
 
     
     def show(self):
-        return self.asDict
+        return self.as_dict
     
 
 
@@ -50,7 +50,7 @@ class CrawlOptions(object):
         self.limit -= self.limit
 
     
-    def metLimit(self):
+    def met_limit(self):
         return self.limit > 0
 
 
@@ -85,5 +85,5 @@ class Crawl(object):
         self.data.track(page)
 
     def show_data(self):
-        return self.data.asDict()
-     #return self.data.track(page.asDict)
+        return self.data.as_dict()
+     #return self.data.track(page.as_dict)
