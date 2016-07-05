@@ -5,16 +5,53 @@
 <h2>{{ title }}.</h2>
 <h3>{{ message }}</h3>
 
-<!-- <address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
-
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address> -->
 <!-- User Input Form -->
+<div class="panel-body">
+	<form action="crawl_submit" method="get" accept-charset="utf-8" class="form-horizontal">
+	<fieldset>
+		<legend>Crawl Web</legend>
+
+		<div class="form-group">
+		<label class="control-label col-xs-2">Start Url: </label>
+			<div class="col-xs-10">
+				<input type="text" name="url" value="">
+			</div>		
+		</div>
+
+		<div class="form-group">
+		<label class="control-label col-xs-2">Crawl Type: </label>
+			<div class="col-xs-10">
+				<select name="select" id="crawl-type" required>
+	                <option value="bfs">Breadth First Search</option>
+					<option value="dfs">Depth First Search</option>
+				</select>
+			</div>		
+		</div>
+
+		<div class="form-group">
+		<label class="control-label col-xs-2">Keyword: </label>
+			<div class="col-xs-10">
+				<input type="text" name="keyword" value="">
+			</div>		
+		</div>
+
+		<div class="form-group">
+		<label class="control-label col-xs-2"># of Pages: </label>
+			<div class="col-xs-10">
+				<input type="number" name="limit" value="">
+			</div>		
+		</div>
+
+		<div class="form-group">
+			<div class="col-xs-offset-2 col-xs-10">
+              <input type="submit" id="new-search" value="Submit" class="btn btn-primary">
+			</div> 
+		</div>
+	</fieldset>	
+	</form>
+</div>
+
+
+
+<!-- Display Plain text of Response -->
 {% endblock %}
