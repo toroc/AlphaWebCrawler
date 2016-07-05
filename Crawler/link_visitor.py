@@ -38,6 +38,7 @@ def rand_visiting(urls):
 def link_visitor(url, keyword=None, limit=10, DFS=True):
     """Return and run the crawl."""
     #Set uo crawl class object
+    
     crawl = Crawl(url, limit, keyword)
     
     
@@ -59,7 +60,7 @@ def link_visitor(url, keyword=None, limit=10, DFS=True):
 
    #print(crawl.data.visited)
 
-    print(crawl.data.asDict())
+    print(crawl.data.as_dict())
 
     
 
@@ -72,7 +73,7 @@ def dfs_crawl(crawling, start_page):
     from_page = start_page.url
     
     
-    while not crawling.emptyQ() and crawling.options.metLimit():
+    while not crawling.emptyQ() and crawling.options.met_limit():
         url = crawling.dequeue()
 
         next_url = rand_visiting(children)
@@ -88,8 +89,8 @@ def dfs_crawl(crawling, start_page):
             children = cur_page.children
             #crawling.visited_set.add(url)
             crawling.addSet(url)
-            #crawling.pages.visited.append(cur_page.asDict)
-            #crawling.track_data(cur_page.asDict)
+            #crawling.pages.visited.append(cur_page.as_dict)
+            #crawling.track_data(cur_page.as_dict)
             crawling.data.track(cur_page.page_info())
             
             #crawling.options.limit -=1
