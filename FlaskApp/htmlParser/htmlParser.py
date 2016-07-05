@@ -5,7 +5,12 @@ import re
 
 def parse_html(url, keyword):
     title = ''
-    response = urlopen(url)
+    try:
+        response = urlopen(url)
+    except:
+        return {'title': '',
+                'urls': [],
+                'keyword_found': False}
     html = response.read()
     soup = BeautifulSoup(html, "html5lib")
     title_tag = soup.title
