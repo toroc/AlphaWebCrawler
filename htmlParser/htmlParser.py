@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
+from urllib.parse import urljoin
 import re
 
 
@@ -16,9 +17,10 @@ def parse_html(url, keyword):
     title_tag = soup.title
     if (title_tag):
         title = title_tag.string
-    keyword_result = soup.find_all(string=re.compile(keyword), limit=1)
-    if len(keyword_result) > 0:
-        keyword_found= True
+    if (keyword):
+        keyword_result = soup.find_all(string=re.compile(keyword), limit=1)
+        if len(keyword_result) > 0:
+            keyword_found= True
     else:
         keyword_found= False
     urls = []
