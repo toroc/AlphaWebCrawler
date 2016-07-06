@@ -10,6 +10,7 @@ class WebPage(object):
         self.title = title
         self.parent = parent
         self.children = children
+        self.children_count = len(children)
 
     
     def as_dict(self):
@@ -34,6 +35,9 @@ class Pages(object):
     
     def show(self):
         return self.as_dict
+
+    def visit_count(self):
+        return len(self.visited)
     
 
 
@@ -47,11 +51,11 @@ class CrawlOptions(object):
         self.kwd_found = False
 
     def lower(self):
-        self.limit -= self.limit
+        self.limit -= 1
 
     
     def met_limit(self):
-        return self.limit > 0
+        return self.limit > 1
 
 
 class Crawl(object):
@@ -77,7 +81,7 @@ class Crawl(object):
         return self.url_q.empty()
     
     
-    def addSet(self, url):
+    def add_set(self, url):
         return self.visited_set.add(url)
 
     

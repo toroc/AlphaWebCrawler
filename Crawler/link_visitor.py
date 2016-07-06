@@ -4,26 +4,18 @@ This module handles the page crawls.
 (Will add more details)
 """
 
+
 from page_crawl_classes import *
+import urllib
 import random
 import queue
 import time
 import pprint
 import logging
+import html_parser as hp
 random.seed(time.time())
 
-
-urls = ['http://www.stackoverflow.com/',
-        'http://stackoverflow.com/',
-        'http://google.com/',
-        'http://bing.com']
-
-def html_parser(url, keyword=None):
-    """Return page title, urls on page, and keyword found """
-
-    return "Page Title", urls , False
-
-
+pp = pprint.PrettyPrinter(indent=4)
 
 def rand_visiting(urls):
     """Return a random url to visit."""
@@ -48,22 +40,58 @@ def link_visitor(url, keyword=None, limit=10, DFS=True):
     #Add Start page to queue and set
     crawl.enqueue(url)
 
-    crawl.addSet(url)
+    crawl.add_set(url)
 
     crawl.data.track(start_page.page_info())
 
     if DFS:
-        dfs_crawl(crawl, start_page)
+        dfs_crawl_2(crawl, start_page)
     else:
         bfs_crawl(crawl, start_page)
 
 
    #print(crawl.data.visited)
 
-    print(crawl.data.as_dict())
+    #print(crawl.data.as_dict())
+    pp.pprint(crawl.data.as_dict())
+    pp.pprint(len(crawl.data.as_dict()))
+    pp.pprint(crawl.data.visit_count())
+
+
 
     
+def dfs_crawl_2(crawling,start_page):
 
+    children = start_page.children
+
+    from_page = start_page.url
+
+    while crawling.options.met_limit():
+
+        url = rand_visiting(children)
+
+        if url not in crawling.visited_set:
+            cur_page = visit(url, from_page, crawling.options)
+
+            from_page = cur_page.url
+            num_kids = cur_page.children_count
+
+            if num_kids == 0:
+                pass
+            else:
+                children = cur_page.children
+
+            crawling.add_set(url)
+
+            crawling.data.track(cur_page.page_info())
+            
+            #crawling.options.limit -=1
+            crawling.options.lower()
+
+            if crawling.options.kwd_found:
+                # Done
+                logging.warn("Found keyword")
+                break
 
 
 def dfs_crawl(crawling, start_page):
@@ -86,9 +114,20 @@ def dfs_crawl(crawling, start_page):
             # Get page title and urls on page
             cur_page = visit(url, from_page, crawling.options)
             from_page = cur_page.url
-            children = cur_page.children
+            num_kids = cur_page.children_count
+            
+            if num_kids == 0:
+                next_url = rand_visiting(children)
+                crawling.enqueue(next_url)
+            else:
+                children = cur_page.children
+            
+
+            
+                # Go back to previous
+
             #crawling.visited_set.add(url)
-            crawling.addSet(url)
+            crawling.add_set(url)
             #crawling.pages.visited.append(cur_page.as_dict)
             #crawling.track_data(cur_page.as_dict)
             crawling.data.track(cur_page.page_info())
@@ -98,6 +137,7 @@ def dfs_crawl(crawling, start_page):
 
             if crawling.options.kwd_found:
                 # Done
+                logging.warn("Found keyword")
                 break
 
     logging.warn("Done with dfs crawl")
@@ -115,14 +155,14 @@ def bfs_crawl(options, start_page, visited_list, url_queue):
 def visit(url, from_page=None, options=None):
     """Return new page object with details of page visited."""
 
-    title, page_urls, kwd_found = html_parser(url, options.keyword)
-    cur_page = WebPage(url, title, from_page, page_urls)
-    options.kwd_found = kwd_found
+    results = hp.html_parser(url, options.keyword)
+    cur_page = WebPage(url, results['title'], from_page, results['urls'])
+    options.kwd_found = results['keyword_found']
      
     return cur_page
 
 
 
-link_visitor('test')
+link_visitor('http://www.oregonstate.edu','Carol')
 
 
