@@ -54,7 +54,6 @@ def link_visitor(url, keyword=None, limit=10, DFS=True):
 
     #print(crawl.data.as_dict())
     pp.pprint(crawl.data.as_dict())
-    pp.pprint(len(crawl.data.as_dict()))
     pp.pprint(crawl.data.visit_count())
 
 
@@ -73,13 +72,14 @@ def dfs_crawl_2(crawling,start_page):
         if url not in crawling.visited_set:
             cur_page = visit(url, from_page, crawling.options)
 
-            from_page = cur_page.url
+            
             num_kids = cur_page.children_count
 
             if num_kids == 0:
                 pass
             else:
                 children = cur_page.children
+                from_page = cur_page.url
 
             crawling.add_set(url)
 
@@ -101,7 +101,7 @@ def dfs_crawl(crawling, start_page):
     from_page = start_page.url
     
     
-    while not crawling.emptyQ() and crawling.options.met_limit():
+    while not crawling.empty_q() and crawling.met_limit():
         url = crawling.dequeue()
 
         next_url = rand_visiting(children)
@@ -113,7 +113,7 @@ def dfs_crawl(crawling, start_page):
         if url not in crawling.visited_set:
             # Get page title and urls on page
             cur_page = visit(url, from_page, crawling.options)
-            from_page = cur_page.url
+            
             num_kids = cur_page.children_count
             
             if num_kids == 0:
@@ -121,6 +121,7 @@ def dfs_crawl(crawling, start_page):
                 crawling.enqueue(next_url)
             else:
                 children = cur_page.children
+                from_page = cur_page.url
             
 
             
@@ -144,12 +145,32 @@ def dfs_crawl(crawling, start_page):
    
 
 
-def bfs_crawl(options, start_page, visited_list, url_queue):
+def bfs_crawl(crawling, start_page):
 
-    #add all children to the the queue
-    children = start_page.children
-    for x in children: 
-        url_queue.put(x)
+    from_page = None
+    while not crawling.empty_q() and crawling.met_limit():
+
+        u = crawling.dequeue()
+
+        cur_page = visit(u, from_page, crawling.options)
+
+        children = cur_page.children
+
+        for x in children:
+            if x not in crawling.visited_set:
+                crawling.enqueue(x)
+
+
+        crawling.data.track(cur_page.page_info())
+        crawling.options.lower()
+        from_page = u
+
+        if crawling.options.kwd_found:
+            # Done
+            logging.warn("Found keyword")
+            break
+
+    logging.warn("Done with bfs crawl")
 
     #while there are unvisited children
 def visit(url, from_page=None, options=None):
@@ -163,6 +184,6 @@ def visit(url, from_page=None, options=None):
 
 
 
-link_visitor('http://www.oregonstate.edu','Carol')
+link_visitor('http://www.oregonstate.edu','Carol', 25, False)
 
 
