@@ -54,8 +54,8 @@ class CrawlOptions(object):
         self.limit -= 1
 
     
-    def met_limit(self):
-        return self.limit > 1
+    def cur_limit(self):
+        return self.limit
 
 
 class Crawl(object):
@@ -68,6 +68,8 @@ class Crawl(object):
         self.data = Pages()
         
 
+    def met_limit(self):
+        return self.options.cur_limit() > 1
     
     def dequeue(self):
         return self.url_q.get()
@@ -77,7 +79,7 @@ class Crawl(object):
         return self.url_q.put(url)
    
    
-    def emptyQ(self):
+    def empty_q(self):
         return self.url_q.empty()
     
     
