@@ -1,7 +1,6 @@
 """
 Routes and views for the flask application.
 """
-import Crawler
 from crawlerUI import app
 from datetime import datetime
 from flask import render_template, request
@@ -41,24 +40,6 @@ def about():
 # however, you should disable the output of the exception for production
 # applications.
 
-
-@app.route('/crawl_submit', methods=['GET', 'POST'])
-def crawler():
-    error = None
-    if request.method == 'POST':
-        start_url = request.form['url']
-        crawl_type = request.form['crawl-type']
-        keyword = request.form['keyword']
-        limit = request.form['limit']
- 
-
-        if crawl_type == "dfs":
-            results = Crawler.link_visitor(start_url, True, leyword, limit)
-        else:
-            results = Crawler.link_visitor(start_url, False, leyword, limit)
-        
-
-        return results
 
 
 

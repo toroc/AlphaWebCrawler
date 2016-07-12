@@ -5,14 +5,14 @@ This module handles the page crawls.
 """
 
 
-from page_crawl_classes import *
+from crawlerUI.Crawler.page_crawl_classes import *
 import urllib
 import random
 import queue
 import time
 import pprint
 import logging
-import html_parser as hp
+import crawlerUI.Crawler.html_parser as hp
 random.seed(time.time())
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -35,7 +35,7 @@ def link_visitor(url, DFS=True, keyword=None, limit=10, ):
     
     
     #Set up the start page
-    start_page = visit(url,None, crawl.options)
+    start_page = visit(url, None, crawl.options)
 
     #Add Start page to queue and set
     crawl.enqueue(url)
@@ -66,7 +66,7 @@ def dfs_crawl_2(crawling,start_page):
 
     from_page = start_page.url
 
-    while crawling.options.met_limit():
+    while crawling.met_limit():
 
         url = rand_visiting(children)
 
