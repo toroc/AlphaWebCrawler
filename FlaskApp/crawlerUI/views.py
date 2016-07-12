@@ -1,9 +1,10 @@
 """
 Routes and views for the flask application.
 """
+#from Crawler import link_visitor
 from crawlerUI import app
 from datetime import datetime
-from flask import render_template
+from flask import render_template, request
 
 
 @app.route('/')
@@ -39,9 +40,26 @@ def about():
 # Add an error handler. This is useful for debugging the live application,
 # however, you should disable the output of the exception for production
 # applications.
+
+
+@app.route('/crawl_submit', methods=['GET', 'POST'])
+def crawler():
+    error = None
+    if request.method == 'POST':
+        start_url = request.form['url']
+        crawl_type = request.form['crawl-type']
+        keyword = request.form['keyword']
+        limit = request.form['limit']
+        return request.form['limit']
+
+
+
 @app.errorhandler(500)
 def server_error(e):
     return """
     An internal error occurred: <pre>{}</pre>
     See logs for full stacktrace.
     """.format(e), 500
+
+
+

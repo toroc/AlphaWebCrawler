@@ -7,7 +7,7 @@
 
 <!-- User Input Form -->
 <div class="panel-body">
-	<form action="crawl_submit" method="get" accept-charset="utf-8" class="form-horizontal">
+	<form action="crawl_submit" method="post" accept-charset="utf-8" class="form-horizontal">
 	<fieldset>
 		<legend>Crawl Web</legend>
 
@@ -21,7 +21,7 @@
 		<div class="form-group">
 		<label class="control-label col-xs-2">Crawl Type: </label>
 			<div class="col-xs-10">
-				<select name="select" id="crawl-type" required>
+				<select name="crawl-type" id="crawl-type" required>
 	                <option value="bfs">Breadth First Search</option>
 					<option value="dfs">Depth First Search</option>
 				</select>
