@@ -2,8 +2,10 @@
 The flask application package.
 """
 import logging
-from flask import Flask, current_app, redirect, url_for, session
+from flask import Flask, current_app, redirect, url_for, session, Blueprint
 import config
+
+
 def create_app(config, debug=False, testing=False, config_overrides=None):
     app = Flask(__name__)
     app.config.from_object(config)
@@ -23,7 +25,7 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
     #     model = get_model()
     #     model.init_app(app)
 
-
+    #app.register_blueprint(Crawler.crawler)
     return app
 
 #app = create_app(config)
@@ -46,4 +48,6 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
 #     return model
 app = create_app(config)
 
+from crawlerUI.Crawler.views import mod as crawler_module
+app.register_blueprint(crawler_module)
 
