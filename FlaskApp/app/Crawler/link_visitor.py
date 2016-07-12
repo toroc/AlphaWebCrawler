@@ -27,7 +27,7 @@ def rand_visiting(urls):
 
     return rand_url
 
-def link_visitor(url, keyword=None, limit=10, DFS=True):
+def link_visitor(url, DFS=True, keyword=None, limit=10, ):
     """Return and run the crawl."""
     #Set uo crawl class object
     
@@ -53,8 +53,9 @@ def link_visitor(url, keyword=None, limit=10, DFS=True):
    #print(crawl.data.visited)
 
     #print(crawl.data.as_dict())
-    pp.pprint(crawl.data.as_dict())
-    pp.pprint(crawl.data.visit_count())
+    #pp.pprint(crawl.data.as_dict())
+    #pp.pprint(crawl.data.visit_count())
+    return crawl.data.as_dict()
 
 
 
@@ -184,6 +185,6 @@ def visit(url, from_page=None, options=None):
 
 
 
-link_visitor('http://www.oregonstate.edu','Carol', 25, False)
+#link_visitor('http://www.oregonstate.edu','Carol', 25, False)
 
 

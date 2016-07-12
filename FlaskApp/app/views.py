@@ -1,7 +1,7 @@
 """
 Routes and views for the flask application.
 """
-#from Crawler import link_visitor
+import Crawler
 from crawlerUI import app
 from datetime import datetime
 from flask import render_template, request
@@ -50,7 +50,15 @@ def crawler():
         crawl_type = request.form['crawl-type']
         keyword = request.form['keyword']
         limit = request.form['limit']
-        return request.form['limit']
+ 
+
+        if crawl_type == "dfs":
+            results = Crawler.link_visitor(start_url, True, leyword, limit)
+        else:
+            results = Crawler.link_visitor(start_url, False, leyword, limit)
+        
+
+        return results
 
 
 
