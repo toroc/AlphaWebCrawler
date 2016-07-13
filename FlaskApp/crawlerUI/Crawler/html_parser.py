@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.parse import urljoin
+from urllib.parse import urlparse
+
 import re
 import html5lib
 
@@ -28,7 +30,13 @@ def html_parser(url, keyword):
 
     urls = []
     for link in soup.find_all('a'):
-        urls.append(link.get('href'))
+        currentLink = link.get('href')
+        linkTest = urlparse(currentLink)
+        if linkTest.scheme and linkTest.netloc:
+            finalLink = currentLink
+        else:
+            finalLink = urljoin(url, currentLink)
+        urls.append(finalLink)
 
     return {'title': title,
             'urls': urls,
