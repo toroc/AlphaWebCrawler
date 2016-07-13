@@ -5,6 +5,7 @@ import os, sys
 rootdir = os.path.dirname(os.path.abspath(__file__))
 lib = os.path.join(rootdir, 'lib')
 sys.path.append(lib)
+
 # Add the parent directory to the path
 # CURRENTDIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 # if CURRENTDIR not in sys.path:
