@@ -14,7 +14,8 @@ def html_parser(url, keyword):
     except:
         return {'title': '',
                 'urls': [],
-                'keyword_found': False}
+                'keyword_found': False,
+                'visited': False}
     html = response.read()
     soup = BeautifulSoup(html, "html5lib")
     title_tag = soup.title
@@ -40,4 +41,5 @@ def html_parser(url, keyword):
 
     return {'title': title,
             'urls': urls,
-            'keyword_found': keyword_found}
+            'keyword_found': keyword_found,
+            'visited': True}
