@@ -5,13 +5,14 @@ import queue
 
 class WebPage(object):
     """Object maintaining details of visited page."""
-    def __init__(self, url, title, parent, children, kwd_found):
+    def __init__(self, url, title, parent, children, kwd_found, visited):
         self.url = url
         self.title = title
         self.parent = parent
         self.children = children
         self.children_count = len(children)
         self.has_keyword = kwd_found
+        self.visited = visited
 
     
     def as_dict(self):

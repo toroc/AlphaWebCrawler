@@ -2,9 +2,10 @@ from crawlerUI import app, views
 import config
 import os, sys
 
-rootdir = os.path.dirname(os.path.abspath(__file__))
-lib = os.path.join(rootdir, 'lib')
-sys.path.append(lib)
+#rootdir = os.path.dirname(os.path.abspath(__file__))
+#lib = os.path.join(rootdir, 'lib')
+#sys.path.append(lib)
+#sys.path.insert(0,'lib')
 
 # Add the parent directory to the path
 # CURRENTDIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
