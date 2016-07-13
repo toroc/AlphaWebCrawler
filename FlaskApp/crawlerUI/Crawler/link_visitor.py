@@ -44,10 +44,12 @@ def link_visitor(url, DFS=True, keyword=None, limit=10, ):
 
     crawl.data.track(start_page.page_info())
 
-    if DFS:
-        dfs_crawl_2(crawl, start_page)
-    else:
-        bfs_crawl(crawl, start_page)
+    if not start_page.has_keyword:
+        
+        if DFS:
+            dfs_crawl_2(crawl, start_page)
+        else:
+            bfs_crawl(crawl, start_page)
 
 
    #print(crawl.data.visited)
@@ -69,15 +71,16 @@ def dfs_crawl_2(crawling,start_page):
     while crawling.met_limit():
 
         url = rand_visiting(children)
-
+        prev_from = from_page
         if url not in crawling.visited_set:
+            
             cur_page = visit(url, from_page, crawling.options)
 
             
             num_kids = cur_page.children_count
 
             if num_kids == 0:
-                pass
+                from_page = prev_from
             else:
                 children = cur_page.children
                 from_page = cur_page.url
@@ -149,27 +152,28 @@ def dfs_crawl(crawling, start_page):
 def bfs_crawl(crawling, start_page):
 
     from_page = None
-    while not crawling.empty_q() and crawling.met_limit():
+    if not crawling.options.kwd_found:
+        while not crawling.empty_q() and crawling.met_limit():
 
-        u = crawling.dequeue()
+            u = crawling.dequeue()
 
-        cur_page = visit(u, from_page, crawling.options)
+            cur_page = visit(u, from_page, crawling.options)
 
-        children = cur_page.children
+            children = cur_page.children
 
-        for x in children:
-            if x not in crawling.visited_set:
-                crawling.enqueue(x)
+            for x in children:
+                if x not in crawling.visited_set:
+                    crawling.enqueue(x)
 
 
-        crawling.data.track(cur_page.page_info())
-        crawling.options.lower()
-        from_page = u
+            crawling.data.track(cur_page.page_info())
+            crawling.options.lower()
+            from_page = u
 
-        if crawling.options.kwd_found:
-            # Done
-            logging.warn("Found keyword")
-            break
+            if crawling.options.kwd_found:
+                # Done
+                logging.warn("Found keyword")
+                break
 
     logging.warn("Done with bfs crawl")
 
@@ -178,7 +182,7 @@ def visit(url, from_page=None, options=None):
     """Return new page object with details of page visited."""
 
     results = hp.html_parser(url, options.keyword)
-    cur_page = WebPage(url, results['title'], from_page, results['urls'])
+    cur_page = WebPage(url, results['title'], from_page, results['urls'], results['keyword_found'])
     options.kwd_found = results['keyword_found']
      
     return cur_page
