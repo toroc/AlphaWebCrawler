@@ -15,11 +15,13 @@ import logging
 import crawlerUI.Crawler.html_parser as hp
 random.seed(time.time())
 
-pp = pprint.PrettyPrinter(indent=4)
 
-def rand_visiting(urls):
+
+def rand_visiting(urls=[]):
     """Return a random url to visit."""
+    #logging.warn(urls)
     total_urls = len(urls)
+    #logging.warn(total_urls)
     rand_idx = random.randrange(0,total_urls)
 
     rand_url = urls[rand_idx]
@@ -27,12 +29,10 @@ def rand_visiting(urls):
 
     return rand_url
 
-def link_visitor(url, DFS=True, keyword=None, limit=10, ):
-    """Return and run the crawl."""
-    #Set uo crawl class object
-    
+def web_crawler(url, DFS=True, keyword=None, limit=10, ):
+    """Return results from running crawl."""
+    #Set up crawl class object
     crawl = Crawl(url, limit, keyword)
-    
     
     #Set up the start page
     start_page = visit(url, None, crawl.options)
@@ -47,12 +47,9 @@ def link_visitor(url, DFS=True, keyword=None, limit=10, ):
     if not start_page.has_keyword:
         
         if DFS:
-            dfs_crawl_2(crawl, start_page)
+            dfs_crawl(crawl, start_page)
         else:
             bfs_crawl(crawl, start_page)
-
-
-   #print(crawl.data.visited)
 
     #print(crawl.data.as_dict())
     #pp.pprint(crawl.data.as_dict())
@@ -60,21 +57,26 @@ def link_visitor(url, DFS=True, keyword=None, limit=10, ):
     return crawl.data.as_dict()
 
 
-
-    
-def dfs_crawl_2(crawling,start_page):
+   
+def dfs_crawl(crawling, start_page):
+    """Update crawling with results of dfs crawl."""
 
     children = start_page.children
 
     from_page = start_page.url
 
+    url = rand_visiting(start_page.children)
+
     while crawling.met_limit():
 
-        url = rand_visiting(children)
-        prev_from = from_page
+        
+       
         if url not in crawling.visited_set:
+            prev_from = from_page
+            prev_children = children
             
             cur_page = visit(url, from_page, crawling.options)
+
 
             
             num_kids = cur_page.children_count
@@ -82,6 +84,7 @@ def dfs_crawl_2(crawling,start_page):
 
                 if num_kids == 0:
                     from_page = prev_from
+                    children = prev_children
                 else:
                     children = cur_page.children
                     from_page = cur_page.url
@@ -95,65 +98,14 @@ def dfs_crawl_2(crawling,start_page):
 
             if crawling.options.kwd_found:
                 # Done
-                logging.warn("Found keyword")
+                logging.debug("Found keyword")
                 break
 
-
-def dfs_crawl(crawling, start_page):
-    """Update crawling with results of dfs crawl."""
-
-    children = start_page.children
-    from_page = start_page.url
-    url = crawling.dequeue()
-    
-    while  crawling.met_limit():
-        
-
-        next_url = rand_visiting(children)
-
-        if next_url not in crawling.visited_set:
-            crawling.enqueue(next_url)         
-        
-
-        if url not in crawling.visited_set:
-            # Get page title and urls on page
-            cur_page = visit(url, from_page, crawling.options)
-            
-            num_kids = cur_page.children_count
-            
-            if num_kids == 0:
-                next_url = rand_visiting(children)
-                crawling.enqueue(next_url)
-            else:
-                children = cur_page.children
-                from_page = cur_page.url
-            
-
-            
-                # Go back to previous
-
-            #crawling.visited_set.add(url)
-            crawling.add_set(url)
-            #crawling.pages.visited.append(cur_page.as_dict)
-            #crawling.track_data(cur_page.as_dict)
-            crawling.data.track(cur_page.page_info())
-            
-            #crawling.options.limit -=1
-            crawling.options.lower()
-
-            if crawling.options.kwd_found:
-                # Done
-                logging.warn("Found keyword")
-                break
-
-            url = crawling.dequeue()
-
-    logging.warn("Done with dfs crawl")
-   
+            url = rand_visiting(children)
 
 
 def bfs_crawl(crawling, start_page):
-
+    """Update crawling with results of bfs crawl."""
     children = start_page.children
     from_page = start_page.url
     
@@ -181,23 +133,17 @@ def bfs_crawl(crawling, start_page):
 
         if crawling.options.kwd_found:
             # Done
-            logging.warn("Found keyword")
+            logging.debug("Found keyword")
             break
 
-    logging.warn("Done with bfs crawl")
+    logging.debug("Done with bfs crawl")
 
-    #while there are unvisited children
+
 def visit(url, from_page=None, options=None):
-    """Return new page object with details of page visited."""
+    """Return new page object with details of page."""
 
     results = hp.html_parser(url, options.keyword)
     cur_page = WebPage(url, results['title'], from_page, results['urls'], results['keyword_found'], results['visited'])
     options.kwd_found = results['keyword_found']
      
     return cur_page
-
-
-
-#link_visitor('http://www.oregonstate.edu','Carol', 25, False)
-
-
