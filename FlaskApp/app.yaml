@@ -14,17 +14,10 @@
 
 # This file specifies your Python application's runtime configuration.
 # See https://cloud.google.com/appengine/docs/managed-vms/config for details.
-
-runtime: python
-vm: true
-entrypoint: gunicorn -b :$PORT main:app
-
-runtime_config:
-  python_version: 3
-
-
+runtime: python27
+api_version: 1
+threadsafe: true
 
 handlers:
 - url: /.*
-  script: main.py
-  secure: always
+  script: main.app

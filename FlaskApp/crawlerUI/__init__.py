@@ -3,22 +3,22 @@ The flask application package.
 """
 import logging
 from flask import Flask, current_app, redirect, url_for, session, Blueprint
-import config
+#import config
 
 
-def create_app(config, debug=False, testing=False, config_overrides=None):
+def create_app():
     app = Flask(__name__)
-    app.config.from_object(config)
+    #app.config.from_object(config)
 
-    app.debug = debug
-    app.testing = testing
+    #app.debug = debug
+    # app.testing = testing
 
-    if config_overrides:
-        app.config.update(config_overrides)
+    # if config_overrides:
+    #     app.config.update(config_overrides)
 
     # Configure logging
-    if not app.testing:
-        logging.basicConfig(level=logging.INFO)
+    # if not app.testing:
+    #     logging.basicConfig(level=logging.INFO)
 
     # # Setup the data model.
     # with app.app_context():
@@ -46,8 +46,8 @@ def create_app(config, debug=False, testing=False, config_overrides=None):
 #             "Please specify datastore, cloudsql, or mongodb")
 
 #     return model
-app = create_app(config)
+app = create_app()
 
-from crawlerUI.Crawler.views import mod as crawler_module
-app.register_blueprint(crawler_module)
+# from crawlerUI.Crawler.views import mod as crawler_module
+# app.register_blueprint(crawler_module)
 

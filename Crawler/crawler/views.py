@@ -1,9 +1,10 @@
-from flask import Blueprint, request, session, redirect, url_for, render_template, Response, jsonify
-from crawlerUI.Crawler.link_visitor import web_crawler
 
-mod = Blueprint('crawler', __name__, url_prefix='/crawler')
+from crawler.link_visitor import web_crawler
+from crawler import app
+from datetime import datetime
+from flask import render_template, request, Response, jsonify
 
-@mod.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def crawler():
     error = None
     if request.method == 'POST':
@@ -25,8 +26,7 @@ def crawler():
             resp.status_code = 200
             return resp
         else:
-            resp.status_code = 422
-            return resp
+            return not_found
 
     else:
         if 'url' in request.args and 'crawl-type' in request.args:
@@ -46,9 +46,17 @@ def crawler():
             resp = jsonify(results)
             resp.status_code = 200
             return resp
+        else:
+            return not_found()
 
-        resp.status_code = 422
-        return resp
+def not_found():
+    response = jsonify({'code': 422,'message': 'Missing parameters.'})
+    response.status_code = 422
+    return response
 
-
-
+@app.errorhandler(500)
+def server_error(e):
+    return """
+    An internal error occurred: <pre>{}</pre>
+    See logs for full stacktrace.
+    """.format(e), 500

@@ -5,14 +5,14 @@ This module handles the page crawls.
 """
 
 
-from crawlerUI.Crawler.page_crawl_classes import *
+from crawler.page_crawl_classes import *
 import urllib
 import random
-import queue
+import Queue
 import time
 import pprint
 import logging
-import crawlerUI.Crawler.html_parser as hp
+import crawler.html_parser as hp
 random.seed(time.time())
 
 

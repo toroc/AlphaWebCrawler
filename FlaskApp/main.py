@@ -1,5 +1,4 @@
 from crawlerUI import app, views
-import config
 import os, sys
 
 #rootdir = os.path.dirname(os.path.abspath(__file__))
