@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Crawler Visualizer Demo</title>
+  <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+  <script>
+
+    var mockData = [
+      {title: 'Reddit',
+       url: 'http://www.reddit.com',
+       children: ['Imgur', 'YouTube', 'Twitter', 'Instagram', 'Twitter', 'Instagram']},
+      {title: 'Imgur',
+       url: 'http://www.imgur.com',
+       children: []},
+      {title: 'YouTube',
+       url: 'http://www.youtube.com',
+       children: []},
+      {title: 'Twitter',
+       url: 'http://www.twitter.com',
+       children: []},
+      {title: 'Instagram',
+       url: 'http://www.instagram.com',
+       children: []},
+      {title: 'Twitter',
+       url: 'http://www.twitter.com',
+       children: []},
+      {title: 'Instagram',
+       url: 'http://www.instagram.com',
+       children: []}
+    ];
+
+    var nodeColors = [
+      '#2C3E50', // Slate
+      '#E74C3C', // Watermelon
+      '#3498DB', // Sky Blue
+      '#2980B9'  // Ocean Blue
+    ];
+
+    var textColor = '#ECF0F1'; // Ice White
+
+
+    var colorSwitch = true;
+
+    function makeCanvasFullScreen() {
+      var canvas = document.getElementById("demoCanvas");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function makeNode(page, color, textColor) {
+      var title = page['title']
+      function handleClick(event) {
+        window.open(page['url'], '_blank');
+      }
+
+      var circle = new createjs.Shape();
+      var text = new createjs.Text(page['title'], '20px Arial');
+
+      circle.graphics.beginFill(color).drawCircle(0, 0, 60);
+      text.color = textColor;
+      text.x = -30;
+      text.y = -10;
+
+      var container = new createjs.Container();
+      container.addChild(circle, text);
+      container.addEventListener("click", handleClick);
+
+      return container;
+    }
+
+    function dfsDisplay(stage, pages, nodeColors, textColor) {
+      var xPos = 150;
+      var yPos = window.innerHeight / 2;
+      var colorIdx = 0;
+      var pageIdx = 0;
+
+      function addNodes() {
+        if (pageIdx < pages.length) {
+          var node = makeNode(pages[pageIdx], nodeColors[colorIdx], textColor);
+          node.x = xPos;
+          node.y = yPos;
+          stage.addChild(node);
+          stage.update();
+
+          xPos += 180;
+          pageIdx += 1;
+          colorIdx += 1;
+          if (colorIdx >= nodeColors.length)
+            colorIdx = 0;
+        }
+      }
+
+      createjs.Ticker.interval = 500;
+      createjs.Ticker.addEventListener("tick", addNodes);
+    }
+
+    function bfsDisplay(stage, pages, nodeColors, textColor) {
+      var xPos = window.innerWidth / 2;
+      var yPos = window.innerHeight / 2;
+      var colorIdx = 0;
+      var pageIdx = 0;
+      var childIdx = 0;
+      var children = pages[pageIdx]['children'].length;
+      var angleOffset = (2 * Math.PI) / children;
+
+      function addNodes() {
+        if (pageIdx == 0) {
+          var node = makeNode(pages[pageIdx], nodeColors[colorIdx], textColor);
+          node.x = xPos;
+          node.y = yPos;
+          stage.addChild(node);
+          stage.update();
+
+          pageIdx += 1;
+          colorIdx += 1;
+          if (colorIdx >= nodeColors.length)
+            colorIdx = 0;
+
+        } else if (pageIdx < pages.length) {
+          var node = makeNode(pages[pageIdx], nodeColors[colorIdx], textColor);
+          calcPolarToCartesianCoords(node, xPos, yPos, 250, angleOffset * childIdx);
+          stage.addChild(node);
+          stage.update();
+
+          pageIdx += 1;
+          childIdx += 1;
+          colorIdx += 1;
+          if (colorIdx >= nodeColors.length)
+            colorIdx = 0;
+        }
+      }
+
+      createjs.Ticker.interval = 500;
+      createjs.Ticker.addEventListener("tick", addNodes);
+    }
+
+    function calcPolarToCartesianCoords(node, xPos, yPos, distance, angle) {
+      node.x = xPos + (distance * Math.cos(angle));
+      node.y = yPos + (distance * Math.sin(angle));
+    }
+
+    function init() {
+      makeCanvasFullScreen();
+
+      var stage = new createjs.Stage("demoCanvas");
+      dfsDisplay(stage, mockData, nodeColors, textColor);
+
+    }
+  </script>
+</head>
+<body onload="init();">
+  <canvas id="demoCanvas" width="1000" height="600"></canvas>
+</body>
+</html>
