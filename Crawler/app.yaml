@@ -27,4 +27,3 @@ runtime_config:
 handlers:
 - url: /.*
   script: main.py
-secure: always
