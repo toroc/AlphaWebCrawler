@@ -8,7 +8,7 @@ This module handles the page crawls.
 from crawler.page_crawl_classes import *
 import urllib
 import random
-import Queue
+import queue
 import time
 import pprint
 import logging

@@ -1,4 +1,4 @@
-import Queue
+import queue
 
 
 
@@ -64,7 +64,7 @@ class Crawl(object):
     """Object maintaining details of entire crawl."""
     def __init__(self, url, limit, keyword):
         self.start = url
-        self.url_q = Queue.Queue()
+        self.url_q = queue.Queue()
         self.visited_set = set()
         self.options = CrawlOptions(limit, keyword)
         self.data = Pages()
