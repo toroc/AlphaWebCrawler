@@ -3,19 +3,17 @@
 This module handles the page crawls.
 (Will add more details)
 """
+import time
 
-
-from crawler.page_crawl_classes import *
+from page_crawl_classes import *
 import urllib
 import random
 import queue
 import time
 import pprint
 import logging
-import crawler.html_parser as hp
+import html_parser as hp
 random.seed(time.time())
-import time
-
 
 
 
@@ -120,7 +118,7 @@ def bfs_crawl(crawling, start_page):
             cur_page = visit(u, from_page, crawling.options)
 
             if cur_page.visited:
-                children = crawling.options.get_children()
+                children = cur_page.children
                 from_page = u
 
             crawling.data.track(cur_page.page_info())
@@ -144,9 +142,29 @@ def bfs_crawl(crawling, start_page):
 def visit(url, from_page=None, options=None):
     """Return new page object with details of page."""
 
+    #print("Calling HTML parser")
+    start = time.clock()
     results = hp.improved_parser(url, options.keyword)
+    end = time.clock()
+    elapsed = end - start
+    print("html_parser:\t", elapsed)
     cur_page = WebPage(url, results['title'], from_page, results['keyword_found'], results['visited'])
     options.kwd_found = results['keyword_found']
     options.set_children(results['urls'])
      
     return cur_page
+
+
+print("Begin local crawler")
+start_overall = time.clock()
+results = web_crawler('http://oregonstate.edu','Carol', False)
+end_overall = time.clock()
+elapsed_overall= end_overall - start_overall
+print("bfs_crawl:\t", elapsed_overall)
+print(results)
+
+
+
+
+
+

@@ -26,7 +26,7 @@ def crawler():
             resp.status_code = 200
             return resp
         else:
-            return not_found
+            return missing_params()
 
     else:
         if 'url' in request.args and 'crawl-type' in request.args:
@@ -47,10 +47,11 @@ def crawler():
             resp.status_code = 200
             return resp
         else:
-            return not_found()
+            return missing_params()
 
-def not_found():
-    response = jsonify({'code': 422,'message': 'Missing parameters.'})
+
+def missing_params():
+    response = jsonify({'code': 422,'message': 'Missing required parameters: url, crawl-type'})
     response.status_code = 422
     return response
 
