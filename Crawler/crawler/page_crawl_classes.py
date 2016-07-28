@@ -5,12 +5,10 @@ import queue
 
 class WebPage(object):
     """Object maintaining details of visited page."""
-    def __init__(self, url, title, parent, children, kwd_found, visited):
+    def __init__(self, url, title, parent, kwd_found, visited):
         self.url = url
         self.title = title
         self.parent = parent
-        self.children = children
-        self.children_count = len(children)
         self.has_keyword = kwd_found
         self.visited = visited
 
@@ -47,10 +45,12 @@ class Pages(object):
     
 class CrawlOptions(object):
     """Object maintaining options for current crawl."""
-    def __init__(self, limit=10, keyword=None):
+    def __init__(self, limit=10, keyword=None, children=None):
         self.limit = limit
         self.keyword = keyword
         self.kwd_found = False
+        self.cur_children = children
+        self.prev_children = children
 
     def lower(self):
         self.limit -= 1
@@ -58,7 +58,16 @@ class CrawlOptions(object):
     
     def cur_limit(self):
         return self.limit
+    
+    def set_children(self, children):
+        self.prev_children = self.cur_children
+        self.cur_children = children
 
+    def get_children(self):
+        return self.cur_children
+
+    def get_prev_children(self):
+        return self.prev_children
 
 class Crawl(object):
     """Object maintaining details of entire crawl."""

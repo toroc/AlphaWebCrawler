@@ -14,6 +14,8 @@ import pprint
 import logging
 import crawler.html_parser as hp
 random.seed(time.time())
+import time
+
 
 
 
@@ -61,11 +63,11 @@ def web_crawler(url, DFS=True, keyword=None, limit=10, ):
 def dfs_crawl(crawling, start_page):
     """Update crawling with results of dfs crawl."""
 
-    children = start_page.children
+    children = crawling.options.get_children()
 
     from_page = start_page.url
 
-    url = rand_visiting(start_page.children)
+    url = rand_visiting(children)
 
     while crawling.met_limit():
 
@@ -79,14 +81,14 @@ def dfs_crawl(crawling, start_page):
 
 
             
-            num_kids = cur_page.children_count
+            num_kids = len(crawling.options.get_children())
             if cur_page.visited:
 
                 if num_kids == 0:
                     from_page = prev_from
                     children = prev_children
                 else:
-                    children = cur_page.children
+                    children = crawling.options.get_children()
                     from_page = cur_page.url
 
             crawling.add_set(url)
@@ -106,7 +108,7 @@ def dfs_crawl(crawling, start_page):
 
 def bfs_crawl(crawling, start_page):
     """Update crawling with results of bfs crawl."""
-    children = start_page.children
+    children = crawling.options.get_children()
     from_page = start_page.url
     
     while not crawling.empty_q() and crawling.met_limit():
@@ -118,7 +120,7 @@ def bfs_crawl(crawling, start_page):
             cur_page = visit(u, from_page, crawling.options)
 
             if cur_page.visited:
-                children = cur_page.children
+                children = crawling.options.get_children()
                 from_page = u
 
             crawling.data.track(cur_page.page_info())
@@ -143,7 +145,8 @@ def visit(url, from_page=None, options=None):
     """Return new page object with details of page."""
 
     results = hp.html_parser(url, options.keyword)
-    cur_page = WebPage(url, results['title'], from_page, results['urls'], results['keyword_found'], results['visited'])
+    cur_page = WebPage(url, results['title'], from_page, results['keyword_found'], results['visited'])
     options.kwd_found = results['keyword_found']
+    options.set_children(results['urls'])
      
     return cur_page
