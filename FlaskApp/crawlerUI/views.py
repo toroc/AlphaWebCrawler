@@ -30,7 +30,7 @@ def crawl():
 @app.route('/crawl', methods=['POST'])
 def visualize_crawl():
     return render_template(
-        'crawl.html',
+        'visualizer.html',
         title='Crawled by Post',
         year=datetime.now().year,
         message='The crawl page after a post.'
