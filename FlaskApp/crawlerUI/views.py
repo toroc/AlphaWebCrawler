@@ -16,7 +16,7 @@ def home():
         year=datetime.now().year,
     )
 
-@app.route('/crawl')
+@app.route('/crawl', methods=['GET'])
 def crawl():
     """Renders the contact page."""
     return render_template(
@@ -24,6 +24,16 @@ def crawl():
         title='Crawl',
         year=datetime.now().year,
         message='The crawl page.'
+    )
+
+
+@app.route('/crawl', methods=['POST'])
+def visualize_crawl():
+    return render_template(
+        'crawl.html',
+        title='Crawled by Post',
+        year=datetime.now().year,
+        message='The crawl page after a post.'
     )
 
 @app.route('/about')
@@ -49,6 +59,3 @@ def server_error(e):
     An internal error occurred: <pre>{}</pre>
     See logs for full stacktrace.
     """.format(e), 500
-
-
-
