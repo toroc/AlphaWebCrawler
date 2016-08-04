@@ -18,7 +18,7 @@ $(document).ready(function(){
 				type: 'POST',
 				crossDomain: true,
 				dataType: "url",
-				data : targetCrawl,
+				data : targetCrawl.serialize(),
 				success: function(result){
 					console.log(result);
 				},
