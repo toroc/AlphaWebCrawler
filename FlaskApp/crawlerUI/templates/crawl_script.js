@@ -1,32 +1,51 @@
 $(document).ready(function(){
 	var crawls = JSON.parse(localStorage.getItem("savedCrawls"));
 	if (crawls != null){
-		var sel = $('<select>').appendTo('#previous');
+		var sel = $('<select>').appendTo('body');
 		for (c in crawls){
 			sel.append($("<option>").text("URL:"+crawls[c]['url']+ " Crawl Type: "+crawls[c]['crawl-type']).attr('value', c));
 		}
 
-		var past_button = $('<button>').appendTo('#previous');
+		var past_button = $('<button>').appendTo('body');
 		past_button.text("Crawl Again");
 
 		past_button.click(function(event){
 			var curIndex = sel.val();
 			var targetCrawl = crawls[curIndex];
 			console.log(JSON.stringify(targetCrawl));
-			$.ajax({
-				url: 'http://alpha-crawler.appspot.com/',
-				type: 'POST',
-				crossDomain: true,
-				dataType: "url",
-				data : targetCrawl.serialize(),
-				success: function(result){
-					console.log(result);
-				},
-				error: function(xhr, resp, text){
-					console.log(xhr, resp, text);
-				}
-			})
+			var url ='http://alpha-crawler.appspot.com/';
+			var method= 'post';
 
+			var past_search = $('<form>', {
+				action: url,
+				method: method
+			});
+
+			$('<input>').attr({
+				type: "hidden",
+				name: 'url',
+				value: targetCrawl['url']
+			}).appendTo(past_search);
+
+			$('<input>').attr({
+				type: "hidden",
+				name: 'crawl-type',
+				value: targetCrawl['crawl-type']
+			}).appendTo(past_search);
+
+			$('<input>').attr({
+				type: "hidden",
+				name: 'keyword',
+				value: targetCrawl['keyword']
+			}).appendTo(past_search);
+
+			$('<input>').attr({
+				type: "hidden",
+				name: 'limit',
+				value: targetCrawl['limit']
+			}).appendTo(past_search);
+
+			past_search.submit();
 		});
 	}
 });
