@@ -4,7 +4,7 @@ Routes and views for the flask application.
 from crawlerUI import app
 from datetime import datetime
 from flask import render_template, request
-
+import requests
 
 @app.route('/')
 @app.route('/home')
@@ -18,7 +18,7 @@ def home():
 
 @app.route('/crawl', methods=['GET'])
 def crawl():
-    """Renders the contact page."""
+    """Renders the crawl request page."""
     return render_template(
         'crawl.html',
         title='Crawl',
