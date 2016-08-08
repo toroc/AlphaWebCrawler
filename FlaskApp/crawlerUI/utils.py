@@ -18,9 +18,9 @@ def is_bfs(request_form):
     """Determines whether or not the request is for a breadth-first search.
 
     :param request_form: The POST request body from a Flask request object.
-    :returns: Python dictionary containing the POST form data.
+    :returns: Boolean value as a string, for clientside JavaScript interpretation.
     """
     if request_form['crawl-type'] == "bfs":
-        return True
+        return "true"
     else:
-        return False
+        return "false"

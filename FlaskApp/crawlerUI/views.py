@@ -6,7 +6,7 @@ from datetime import datetime
 from flask import render_template, request, Markup
 import requests
 import json
-from utils import parse_multidict
+from utils import parse_multidict, is_bfs
 
 @app.route('/')
 @app.route('/home')
@@ -32,13 +32,14 @@ def crawl():
 @app.route('/crawl', methods=['POST'])
 def visualize_crawl():
     form_data = parse_multidict(request.form)
-    crawl_request = requests.post("http://alpha-crawler.appspot.com/", data=form_data)
+    crawl_request = requests.post("http://alpha-crawler.appspot.com/", data=form_data, timeout=10.0)
     return render_template(
         'visualizer.html',
         title='Crawled by Post',
         year=datetime.now().year,
         message='The crawl page after a post.',
-        response=json.dumps(crawl_request.json(), ensure_ascii=False)
+        response=json.dumps(crawl_request.json(), ensure_ascii=False),
+        bfs=is_bfs(form_data)
     )
 
 @app.route('/about')
