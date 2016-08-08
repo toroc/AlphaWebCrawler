@@ -4,7 +4,6 @@
 
 <h2>{{ title }}</h2>
 <h3>{{ message }}</h3>
-
 <canvas id="demoCanvas" width="1000" height="600" ></canvas>
 
 {% endblock %}
@@ -13,6 +12,10 @@
 
 <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
 <script>
+  {% autoescape false %}
+  var rawData = {{ response }};
+  {% endautoescape %}
+  console.log(rawData);
 
   var mockData = [
     {title: 'Reddit',
