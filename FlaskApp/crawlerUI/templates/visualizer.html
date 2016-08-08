@@ -17,29 +17,29 @@
   {% endautoescape %}
   console.log(rawData);
 
-  var mockData = [
-    {title: 'Reddit',
-     url: 'http://www.reddit.com',
-     children: ['Imgur', 'YouTube', 'Twitter', 'Instagram', 'Facebook', 'Amazon']},
-    {title: 'Imgur',
-     url: 'http://www.imgur.com',
-     children: []},
-    {title: 'YouTube',
-     url: 'http://www.youtube.com',
-     children: []},
-    {title: 'Twitter',
-     url: 'http://www.twitter.com',
-     children: []},
-    {title: 'Instagram',
-     url: 'http://www.instagram.com',
-     children: []},
-    {title: 'Facebook',
-     url: 'http://www.facebook.com',
-     children: []},
-    {title: 'Amazon',
-     url: 'http://www.amazon.com',
-     children: []}
-  ];
+  // var mockData = [
+  //   {title: 'Reddit',
+  //    url: 'http://www.reddit.com',
+  //    children: ['Imgur', 'YouTube', 'Twitter', 'Instagram', 'Facebook', 'Amazon']},
+  //   {title: 'Imgur',
+  //    url: 'http://www.imgur.com',
+  //    children: []},
+  //   {title: 'YouTube',
+  //    url: 'http://www.youtube.com',
+  //    children: []},
+  //   {title: 'Twitter',
+  //    url: 'http://www.twitter.com',
+  //    children: []},
+  //   {title: 'Instagram',
+  //    url: 'http://www.instagram.com',
+  //    children: []},
+  //   {title: 'Facebook',
+  //    url: 'http://www.facebook.com',
+  //    children: []},
+  //   {title: 'Amazon',
+  //    url: 'http://www.amazon.com',
+  //    children: []}
+  // ];
 
   var nodeColors = [
     '#2C3E50', // Slate
@@ -112,12 +112,12 @@
     var colorIdx = 0;
     var pageIdx = 0;
     var childIdx = 0;
-    var children = pages[pageIdx]['children'].length;
+    var children = pages['visited'].length;
     var angleOffset = (2 * Math.PI) / children;
 
     function addNodes() {
       if (pageIdx == 0) {
-        var node = makeNode(pages[pageIdx], nodeColors[colorIdx], textColor);
+        var node = makeNode(pages['visited'][pageIdx], nodeColors[colorIdx], textColor);
         node.x = xPos;
         node.y = yPos;
         stage.addChild(node);
@@ -128,8 +128,8 @@
         if (colorIdx >= nodeColors.length)
           colorIdx = 0;
 
-      } else if (pageIdx < pages.length) {
-        var node = makeNode(pages[pageIdx], nodeColors[colorIdx], textColor);
+      } else if (pageIdx < pages['visited'].length) {
+        var node = makeNode(pages['visited'][pageIdx], nodeColors[colorIdx], textColor);
         calcPolarToCartesianCoords(node, xPos, yPos, 250, angleOffset * childIdx);
         stage.addChild(node);
         stage.update();
@@ -155,7 +155,7 @@
     makeCanvasFullScreen();
 
     var stage = new createjs.Stage("demoCanvas");
-    bfsDisplay(stage, mockData, nodeColors, textColor);
+    bfsDisplay(stage, rawData, nodeColors, textColor);
 
   }
 
