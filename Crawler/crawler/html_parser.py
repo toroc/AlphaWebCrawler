@@ -4,7 +4,6 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 
 import re
-import html5lib
 import lxml
 import socket
 import requests
@@ -79,10 +78,12 @@ def improved_parser(url, keyword):
     keyword_found = False
 
     if (keyword):
-        keyword_result = soup.find_all(string=re.compile(keyword), limit=1)
-        if len(keyword_result) > 0:
+        if soup.body.find(text = re.compile(keyword)):
+            # Keyword exists in the document body
             keyword_found = True
 
+
+    # Get only valid http URLs
     urls = get_http_links(response, parsed_content)
 
     return {'title': title,
@@ -95,9 +96,12 @@ def get_http_links(response, parsed_content):
     """Return only http links."""
     #print("getting only http links")
     page_links = []
+    # extract only links that begin with http
     links = {urljoin(response.url, url) for url in parsed_content.xpath('//a/@href') if urljoin(response.url, url).startswith('http')}
 
+
     for link in links:
+        #Add only links that haven't been already added to the set
         if link not in page_links:
             page_links.append(link)
 
