@@ -4,6 +4,7 @@ def parse_multidict(request_form):
     """Converts Flask form data to standard dictionary.
 
     :param request_form: The POST request body from a Flask request object.
+    :returns: Python dictionary containing the POST form data.
     """
 
     data = {}
@@ -12,3 +13,14 @@ def parse_multidict(request_form):
     data['keyword'] = request_form['keyword']
     data['crawl-type'] = request_form['crawl-type']
     return data
+
+def is_bfs(request_form):
+    """Determines whether or not the request is for a breadth-first search.
+
+    :param request_form: The POST request body from a Flask request object.
+    :returns: Python dictionary containing the POST form data.
+    """
+    if request_form['crawl-type'] == "bfs":
+        return True
+    else:
+        return False
