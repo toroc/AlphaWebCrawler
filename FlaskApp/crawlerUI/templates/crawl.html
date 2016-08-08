@@ -7,7 +7,7 @@
 
 <!-- User Input Form -->
 <div class="panel-body">
-	<form action="http://alpha-crawler.appspot.com/" method="post" accept-charset="utf-8" class="form-horizontal">
+	<form action="/crawl" method="post" accept-charset="utf-8" class="form-horizontal">
 	<fieldset>
 		<legend>Crawl Web</legend>
 
@@ -15,7 +15,7 @@
 		<label class="control-label col-xs-2">Start Url: </label>
 			<div class="col-xs-10">
 				<input type="url" name="url" placeholder="http://oregonstate.edu" required>
-			</div>		
+			</div>
 		</div>
 
 		<div class="form-group">
@@ -25,33 +25,33 @@
 	                <option value="bfs">Breadth First Search</option>
 					<option value="dfs">Depth First Search</option>
 				</select>
-			</div>		
+			</div>
 		</div>
 
 		<div class="form-group">
 		<label class="control-label col-xs-2">Keyword: </label>
 			<div class="col-xs-10">
 				<input type="text" name="keyword" value="">
-			</div>		
+			</div>
 		</div>
 
 		<div class="form-group">
 		<label class="control-label col-xs-2"># of Pages: </label>
 			<div class="col-xs-10">
 				<input type="number" name="limit" value="" required>
-			</div>		
+			</div>
 		</div>
 
 		<div class="form-group">
 			<div class="col-xs-offset-2 col-xs-10">
               <input type="submit" id="new-search" value="Submit" class="btn btn-primary">
-			</div> 
+			</div>
 		</div>
-	</fieldset>	
+	</fieldset>
 	</form>
 </div>
 
-
+<script src="/static/scripts/session_storage.js"></script>
 
 <!-- Display Plain text of Response -->
 {% endblock %}

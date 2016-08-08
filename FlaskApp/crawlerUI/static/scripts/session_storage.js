@@ -13,7 +13,7 @@ $(document).ready(function(){
 			var curIndex = sel.val();
 			var targetCrawl = crawls[curIndex];
 			console.log(JSON.stringify(targetCrawl));
-			var url ='http://alpha-crawler.appspot.com/';
+			var url ='/crawl';
 			var method= 'post';
 
 			var past_search = $('<form>', {
