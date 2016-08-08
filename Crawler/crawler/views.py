@@ -4,6 +4,7 @@ from crawler import app
 from datetime import datetime
 from flask import render_template, request, Response, jsonify
 import logging
+MAX_LIMIT = 20
 
 @app.route('/', methods=['GET', 'POST'])
 def crawler():
@@ -37,7 +38,7 @@ def crawler():
             limit = int(limit)
         
             limit = validate_limit(limit)
-            
+
             if crawl_type == "dfs":
                 results = web_crawler(start_url, True, keyword, limit)
             else:
@@ -69,10 +70,10 @@ def validate_results(results):
         return invalid_start_page()
 
 def validate_limit(limit):
-    if limit > 20:
-        return 20
+    if limit > MAX_LIMIT:
+        return MAX_LIMIT
     else:
-        return limit
+        return int(limit)
 
 @app.errorhandler(500)
 def server_error(e):

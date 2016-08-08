@@ -77,10 +77,12 @@ def improved_parser(url, keyword):
 
     keyword_found = False
 
-    if (keyword):
+    if keyword != '':
         if soup.body.find(text = re.compile(keyword)):
             # Keyword exists in the document body
             keyword_found = True
+    else:
+        keyword_found = False
 
 
     # Get only valid http URLs
