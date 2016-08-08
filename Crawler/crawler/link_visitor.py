@@ -46,13 +46,18 @@ def web_crawler(url, DFS=True, keyword=None, limit=10, ):
 
     crawl.data.track(start_page.page_info())
 
-    if not start_page.has_keyword:
-        
-        if DFS:
-            dfs_crawl(crawl, start_page)
-        else:
-            bfs_crawl(crawl, start_page)
+    logging.warn(start_page.visited)
+    if start_page.visited:
+        if not start_page.has_keyword:
+            #Keyword not found continue
 
+            if DFS:
+                dfs_crawl(crawl, start_page)
+            else:
+                bfs_crawl(crawl, start_page)
+    else:
+        #Invalid start page
+        return False
     #print(crawl.data.as_dict())
     #pp.pprint(crawl.data.as_dict())
     #pp.pprint(crawl.data.visit_count())
