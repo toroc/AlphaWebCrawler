@@ -1,22 +1,39 @@
+
+/**
+ * Global Variables
+ */
 var nodeColors = [
     '#2C3E50', // Slate
     '#E74C3C', // Watermelon
     '#3498DB', // Sky Blue
     '#2980B9'  // Ocean Blue
 ];
-
 var textColor = '#ECF0F1'; // Ice White
-
 var colorSwitch = true;
 
+/**
+ * Expands the canvas element to fit the window size.
+ */
 function makeCanvasFullScreen() {
     var canvas = document.getElementById("demoCanvas");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
 
+/**
+ * Makes a display node from web page data.
+ * @param {object} page A parsed, individual page returned from the crawler.
+ * @param {string} color A hexadecimal color string for the node background
+ *     color.
+ * @param {string} textColor A hexadecimal color string for the text color.
+ * @return {Container} A container object containing circle and text
+ *     children.
+ */
 function makeNode(page, color, textColor) {
-    var title = page['title']
+    /**
+     * An event handler to open the associated webpage on click.
+     * @param {Event} The event object supplied to the handler.
+     */
     function handleClick(event) {
         window.open(page['url'], '_blank');
     }
@@ -24,7 +41,7 @@ function makeNode(page, color, textColor) {
     var circle = new createjs.Shape();
     var text = new createjs.Text(page['title'], '20px Arial');
 
-    circle.graphics.beginFill(color).drawCircle(0, 0, 60);
+    circle.graphics.beginFill(color).drawCircle(0, 0, 30);
     text.color = textColor;
     text.x = -30;
     text.y = -10;
@@ -43,8 +60,8 @@ function dfsDisplay(stage, pages, nodeColors, textColor) {
     var pageIdx = 0;
 
     function addNodes() {
-        if (pageIdx < pages.length) {
-            var node = makeNode(pages[pageIdx], nodeColors[colorIdx], textColor);
+        if (pageIdx < pages['visited'].length) {
+            var node = makeNode(pages['visited'][pageIdx], nodeColors[colorIdx], textColor);
             node.x = xPos;
             node.y = yPos;
             stage.addChild(node);
@@ -111,8 +128,25 @@ function init() {
     makeCanvasFullScreen();
 
     var stage = new createjs.Stage("demoCanvas");
-    bfsDisplay(stage, rawData, nodeColors, textColor);
+    if (isBfs) {
+        bfsDisplay(stage, rawData, nodeColors, textColor);
+    } else {
+        dfsDisplay(stage, rawData, nodeColors, textColor);
+    }
 
 }
 
 init();
+
+/****************************************************************/
+
+function DepthFirstList(crawlData) {
+
+
+
+    return this;
+}
+
+function BreadthFirstTree() {
+
+}
