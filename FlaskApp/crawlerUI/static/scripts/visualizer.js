@@ -80,7 +80,7 @@ function makeNode(page, color, textColor) {
 /**
  * Draws a depth-first search visualization to the document canvas.
  * @param {Stage} stage The stage object associated with the canvas.
- * @param {object} pages The parsed JSON page data.
+ * @param {Array} pages An ordered array of page objects.
  * @param {Array} nodeColors An array of hexadecimal color strings.
  * @param {String} textColor A hexadecimal color string
  */
@@ -94,8 +94,8 @@ function dfsDisplay(stage, pages, nodeColors, textColor) {
      * Draws the next node to the canvas.
      */
     function addNodes() {
-        if (pageIdx < pages['visited'].length) {
-            var node = makeNode(pages['visited'][pageIdx], nodeColors[colorIdx], textColor);
+        if (pageIdx < pages.length) {
+            var node = makeNode(pages[pageIdx], nodeColors[colorIdx], textColor);
             node.x = xPos;
             node.y = yPos;
             stage.addChild(node);
@@ -189,19 +189,53 @@ function init() {
     if (isBfs) {
         bfsDisplay(stage, rawData, nodeColors, textColor);
     } else {
-        dfsDisplay(stage, rawData, nodeColors, textColor);
+        var orderedData = orderDfsPages(rawData.visited);
+        dfsDisplay(stage, orderedData, nodeColors, textColor);
     }
 
 }
 
 init();
 
-/** Removes leading and trailing braces/quotation marks from title string.
- *  @param {String} title A title string with header and trailer characters.
- *  @return {String} The cleaned-up string.
+/**
+ * Removes leading and trailing braces/quotation marks from title string.
+ * @param {String} title A title string with header and trailer characters.
+ * @return {String} The cleaned-up string.
  */
 function cleanTitle(title) {
     return title.substring(2, title.length-2);
+}
+
+/**
+ * Constructs a linear ordering of the pages in a depth-first search.
+ * @param {Array} pages An unordered array of the pages in a depth-first
+ *     search.
+ * @return {Array} An ordered array of the pages in a depth-first search.
+ */
+function orderDfsPages(pages) {
+    var orderedPages = [];
+
+    // Find root page
+    for (var i = 0, rootFound = false; i < pages.length && !rootFound; i++) {
+        if (pages[i].parent === null) {
+            orderedPages.push(pages[i]);
+            pages.splice(i, 1); // remove parent
+            rootFound = true;
+        }
+    }
+
+    // Build list of children
+    while (pages.length) {
+        for (var i = 0; i < pages.length; i++) {
+            if (pages[i].parent === orderedPages[orderedPages.length-1].url) {
+                orderedPages.push(pages[i]);
+                pages.splice(i, 1);
+                break;
+            }
+        }
+    }
+
+    return orderedPages;
 }
 
 /****************************************************************/
