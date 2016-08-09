@@ -44,7 +44,7 @@ function makeNode(page, color, textColor) {
      * @param {Event} event The event object supplied to the handler.
      */
     function rolloverZoom(event) {
-        event.target.scaleX = event.target.scaleY = event.target.scale * 1.3;
+        event.target.scaleX = event.target.scaleY = event.target.scale * 1.8;
         stage.update();
     }
 
@@ -58,13 +58,13 @@ function makeNode(page, color, textColor) {
     }
 
     var circle = new createjs.Shape();
-    var text = new createjs.Text(page['title'], '20px Arial');
+    var text = new createjs.Text(page['title'], '14px Arial');
 
     circle.graphics.beginFill(color).drawCircle(0, 0, 20);
     text.color = color;
     text.x = -90;
     text.y = 30;
-    text.maxWidth = 200;
+    text.lineWidth = 180;
 
     var container = new createjs.Container();
     container.cursor = "pointer";
