@@ -31,7 +31,7 @@ def rand_visiting(urls=[]):
 
     return rand_url
 
-def web_crawler(url, DFS=True, keyword=None, limit=10, ):
+def web_crawler(url, DFS, keyword=None, limit=10, ):
     """Return results from running crawl."""
     #Set up crawl class object
     crawl = Crawl(url, limit, keyword)
@@ -40,7 +40,7 @@ def web_crawler(url, DFS=True, keyword=None, limit=10, ):
     start_page = visit(url, None, crawl.options)
 
     #Add Start page to queue and set
-    crawl.enqueue(url)
+    crawl.enqueue((url, None))
 
     crawl.add_set(url)
 
@@ -50,10 +50,11 @@ def web_crawler(url, DFS=True, keyword=None, limit=10, ):
     if start_page.visited:
         if not start_page.has_keyword:
             #Keyword not found continue
-
             if DFS:
                 dfs_crawl(crawl, start_page)
+
             else:
+                #logging.warn("Run BFS crawl")
                 bfs_crawl(crawl, start_page)
     else:
         #Invalid start page
@@ -75,7 +76,6 @@ def dfs_crawl(crawling, start_page):
     url = rand_visiting(children)
 
     while crawling.met_limit():
-
         
        
         if url not in crawling.visited_set:
@@ -83,7 +83,6 @@ def dfs_crawl(crawling, start_page):
             prev_children = children
             
             cur_page = visit(url, from_page, crawling.options)
-
 
             
             num_kids = len(crawling.options.get_children())
@@ -118,26 +117,25 @@ def bfs_crawl(crawling, start_page):
     
     while not crawling.empty_q() and crawling.met_limit():
 
-        u = crawling.dequeue()
+        (current, from_page) = crawling.dequeue()
 
-        if u not in crawling.visited_set:
+        if current not in crawling.visited_set:
 
-            cur_page = visit(u, from_page, crawling.options)
+            cur_page = visit(current, from_page, crawling.options)
 
             if cur_page.visited:
                 children = crawling.options.get_children()
-                from_page = u
+                from_page = cur_page
 
             crawling.data.track(cur_page.page_info())
             crawling.options.lower()
             
 
-
+        #Add unvisited children to the queue
         for x in children:
             if x not in crawling.visited_set:
-                crawling.enqueue(x)
+                crawling.enqueue((x, current))
         
-
         if crawling.options.kwd_found:
             # Done
             logging.debug("Found keyword")

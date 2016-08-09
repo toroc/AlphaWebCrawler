@@ -18,6 +18,7 @@ def crawler():
             limit = int(limit)
      	  
             limit = validate_limit(limit)
+            logging.warn(keyword)
 
             if crawl_type == "dfs":
                 results = web_crawler(start_url, True, keyword, limit)
