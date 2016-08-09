@@ -58,7 +58,7 @@ function makeNode(page, color, textColor) {
     }
 
     var circle = new createjs.Shape();
-    var text = new createjs.Text(page['title'], '14px Arial');
+    var text = new createjs.Text(cleanTitle(page['title']), '14px Arial');
 
     circle.graphics.beginFill(color).drawCircle(0, 0, 20);
     text.color = color;
@@ -77,12 +77,22 @@ function makeNode(page, color, textColor) {
     return container;
 }
 
+/**
+ * Draws a depth-first search visualization to the document canvas.
+ * @param {Stage} stage The stage object associated with the canvas.
+ * @param {object} pages The parsed JSON page data.
+ * @param {Array} nodeColors An array of hexadecimal color strings.
+ * @param {String} textColor A hexadecimal color string
+ */
 function dfsDisplay(stage, pages, nodeColors, textColor) {
     var xPos = 100;
     var yPos = window.innerHeight / 2;
     var colorIdx = 0;
     var pageIdx = 0;
 
+    /**
+     * Draws the next node to the canvas.
+     */
     function addNodes() {
         if (pageIdx < pages['visited'].length) {
             var node = makeNode(pages['visited'][pageIdx], nodeColors[colorIdx], textColor);
@@ -103,6 +113,13 @@ function dfsDisplay(stage, pages, nodeColors, textColor) {
     createjs.Ticker.addEventListener("tick", addNodes);
 }
 
+/**
+ * Draws a breadth-first search visualization to the document canvas.
+ * @param {Stage} stage The stage object associated with the canvas.
+ * @param {object} pages The parsed JSON page data.
+ * @param {Array} nodeColors An array of hexadecimal color strings.
+ * @param {String} textColor A hexadecimal color string
+ */
 function bfsDisplay(stage, pages, nodeColors, textColor) {
     var xPos = window.innerWidth / 2;
     var yPos = window.innerHeight / 2;
@@ -112,6 +129,9 @@ function bfsDisplay(stage, pages, nodeColors, textColor) {
     var children = pages['visited'].length;
     var angleOffset = (2 * Math.PI) / children;
 
+    /**
+     * Draws the next node to the canvas.
+     */
     function addNodes() {
         if (pageIdx == 0) {
             var node = makeNode(pages['visited'][pageIdx], nodeColors[colorIdx], textColor);
@@ -143,11 +163,23 @@ function bfsDisplay(stage, pages, nodeColors, textColor) {
     createjs.Ticker.addEventListener("tick", addNodes);
 }
 
+/**
+ * Positions a node on the canvas using polar coordinates.
+ * @param {Container} node The graphics node to be positioned.
+ * @param {Number} xPos The x-coordinate to be offset from.
+ * @param {Number} yPos The y-coordinate to be offset from.
+ * @param {Number} distance The distance in pixels to be offset from xPos and
+ *     yPos.
+ * @param {Number} angle The angle at which to be offset from xPos and yPos.
+ */
 function calcPolarToCartesianCoords(node, xPos, yPos, distance, angle) {
     node.x = xPos + (distance * Math.cos(angle));
     node.y = yPos + (distance * Math.sin(angle));
 }
 
+/**
+ * Initializes the graphics stage and starts the visualization.
+ */
 function init() {
     makeCanvasFullScreen();
 
@@ -163,6 +195,14 @@ function init() {
 }
 
 init();
+
+/** Removes leading and trailing braces/quotation marks from title string.
+ *  @param {String} title A title string with header and trailer characters.
+ *  @return {String} The cleaned-up string.
+ */
+function cleanTitle(title) {
+    return title.substring(2, title.length-2);
+}
 
 /****************************************************************/
 
