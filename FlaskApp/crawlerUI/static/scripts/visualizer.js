@@ -93,7 +93,7 @@ function dfsDisplay(stage, pages, nodeColors, textColor) {
     var pageIdx = 0;
 
     /**
-     * Draws the next node to the canvas.
+     * Draws the next node on the canvas.
      */
     function addNodes() {
         if (pageIdx < pages.length) {
@@ -190,6 +190,7 @@ function init() {
     stage.enableMouseOver(10);
     stage.mouseMoveOutside = true;
     if (isBfs) {
+        // var crawlTree = buildCrawlTree(rawData.visited);
         bfsDisplay(stage, rawData, nodeColors, textColor);
     } else {
         var orderedData = orderDfsPages(rawData.visited);
@@ -240,3 +241,108 @@ function orderDfsPages(pages) {
 
     return orderedPages;
 }
+
+/**
+ * Constructs an N-ary tree of a breadth-first search crawl.
+ * @param {Array} pages An array of pages produced from a depth-first search
+ *     crawl.
+ * @returns {NAryTree} An n-ary tree representing the crawl.
+ */
+function buildCrawlTree(pages) {
+    /**
+     * Finds the root page of the crawl and constructs the tree root.
+     * @param {Array} pages An array of pages produced from a depth-first
+     *     search crawl.
+     * @returns {NAryTree} An n-ary tree representing the crawl or null if
+     *     the crawl has no root (invalid input).
+     */
+    function findRoot(pages) {
+        for (var i = 0; i < pages.length; i++) {
+            if (pages[i].parent === null) {
+                var rootNode = new NAryTreeNode(pages[i]);
+                pages.splice(i, 1);
+                return new NAryTree(rootNode);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Recursively finds the children pages of each node in the tree.
+     * @param {NAryTreeNode} node The current node in the tree.
+     * @param {Array} pages The pages of the crawl.
+     * @returns {NAryTreeNode} The node with its children array filled.
+     */
+    function findChildren(node, pages) {
+        // Add all children to current node.
+        for (var i = 0; i < pages.length; i++) {
+            if (node.element.url === pages[i].parent) {
+                var child = new NAryTreeNode(pages[i]);
+                node.children.push(child);
+                pages.splice(i, 1);
+                i--;
+            }
+        }
+
+        // Base case: no children
+        if (node.children.length === 0) {
+            return node;
+        // Recursive case: find each child nodes children
+        } else {
+            for (var i = 0; i < node.children.length; i++) {
+                findChildren(node.children[i], pages);
+            }
+            return node;
+        }
+    }
+
+    var crawlTree = findRoot(pages);
+    if (crawlTree) {
+        findChildren(crawlTree.root, pages);
+    }
+
+    return crawlTree;
+}
+
+/** A constructor for an n-ary tree.
+ * @param {NAryTreeNode} root The root node of the tree.
+ * @constructor
+ * @returns {NAryTree} The newly instantiated tree.
+ */
+function NAryTree(root) {
+    this.root = root;
+
+    return this;
+}
+
+/**
+ * A constructor for an n-ary tree node.
+ * @param {object} page The web page to be stored in the tree.
+ * @constructor
+ * @returns {NAryTreeNode} The newly instantiated tree node.
+ */
+function NAryTreeNode(page) {
+    this.element = page;
+    this.children = [];
+
+    return this;
+}
+
+/**
+ * Adds a childNode to a treeNode.
+ * @param {NAryTreeNode} treeNode The node to add as a child.
+ * @returns {Number} The new child count of the node.
+ */
+NAryTreeNode.prototype.addChild = function (treeNode) {
+    this.children.push(treeNode);
+    return this.children.length;
+};
+
+/**
+ * Returns the number of children of the node.
+ * @returns {Number} The number of children in the calling object.
+ */
+NAryTreeNode.prototype.childCount = function () {
+    return this.children.length;
+};
