@@ -13,12 +13,14 @@ var colorSwitch = true;
 var stage;
 
 /**
- * Expands the canvas element to fit the window size.
+ * Resizes the canvas element.
+ * @param {Number} width The desired width of the canvas.
+ * @param {Number} height The desired height of the canvas.
  */
-function makeCanvasFullScreen() {
+function resizeCanvas(width, height) {
     var canvas = document.getElementById("demoCanvas");
-    canvas.width = 4000;
-    canvas.height = 2500;
+    canvas.width = width;
+    canvas.height = height;
 }
 
 /**
@@ -85,8 +87,8 @@ function makeNode(page, color, textColor) {
  * @param {String} textColor A hexadecimal color string
  */
 function dfsDisplay(stage, pages, nodeColors, textColor) {
-    var xPos = 100;
-    var yPos = window.innerHeight / 2;
+    var xPos = 170;
+    var yPos = 250;
     var colorIdx = 0;
     var pageIdx = 0;
 
@@ -181,7 +183,8 @@ function calcPolarToCartesianCoords(node, xPos, yPos, distance, angle) {
  * Initializes the graphics stage and starts the visualization.
  */
 function init() {
-    makeCanvasFullScreen();
+    var height = isBfs ? 2500 : 500;
+    resizeCanvas(4000, height);
 
     stage = new createjs.Stage("demoCanvas");
     stage.enableMouseOver(10);
@@ -236,17 +239,4 @@ function orderDfsPages(pages) {
     }
 
     return orderedPages;
-}
-
-/****************************************************************/
-
-function DepthFirstList(crawlData) {
-
-
-
-    return this;
-}
-
-function BreadthFirstTree() {
-
 }
