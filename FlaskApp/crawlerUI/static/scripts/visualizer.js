@@ -10,14 +10,15 @@ var nodeColors = [
 ];
 var textColor = '#ECF0F1'; // Ice White
 var colorSwitch = true;
+var stage;
 
 /**
  * Expands the canvas element to fit the window size.
  */
 function makeCanvasFullScreen() {
     var canvas = document.getElementById("demoCanvas");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = 4000;
+    canvas.height = 2500;
 }
 
 /**
@@ -32,29 +33,52 @@ function makeCanvasFullScreen() {
 function makeNode(page, color, textColor) {
     /**
      * An event handler to open the associated webpage on click.
-     * @param {Event} The event object supplied to the handler.
+     * @param {Event} event The event object supplied to the handler.
      */
     function handleClick(event) {
         window.open(page['url'], '_blank');
     }
 
+    /**
+     * Zooms in on node on rollover.
+     * @param {Event} event The event object supplied to the handler.
+     */
+    function rolloverZoom(event) {
+        event.target.scaleX = event.target.scaleY = event.target.scale * 1.3;
+        stage.update();
+    }
+
+    /**
+     * Zooms out from node on rollout.
+     * @param {Event} event The event object supplied to the handler.
+     */
+    function rolloutZoom(event) {
+        event.target.scaleX = event.target.scaleY = event.target.scale;
+        stage.update();
+    }
+
     var circle = new createjs.Shape();
     var text = new createjs.Text(page['title'], '20px Arial');
 
-    circle.graphics.beginFill(color).drawCircle(0, 0, 30);
-    text.color = textColor;
-    text.x = -30;
-    text.y = -10;
+    circle.graphics.beginFill(color).drawCircle(0, 0, 20);
+    text.color = color;
+    text.x = -90;
+    text.y = 30;
+    text.maxWidth = 200;
 
     var container = new createjs.Container();
+    container.cursor = "pointer";
+    container.scale = 1.0;
     container.addChild(circle, text);
-    container.addEventListener("click", handleClick);
+    container.on("click", handleClick);
+    container.on("rollover", rolloverZoom);
+    container.on("rollout", rolloutZoom);
 
     return container;
 }
 
 function dfsDisplay(stage, pages, nodeColors, textColor) {
-    var xPos = 150;
+    var xPos = 100;
     var yPos = window.innerHeight / 2;
     var colorIdx = 0;
     var pageIdx = 0;
@@ -67,7 +91,7 @@ function dfsDisplay(stage, pages, nodeColors, textColor) {
             stage.addChild(node);
             stage.update();
 
-            xPos += 180;
+            xPos += 200;
             pageIdx += 1;
             colorIdx += 1;
             if (colorIdx >= nodeColors.length)
@@ -127,7 +151,9 @@ function calcPolarToCartesianCoords(node, xPos, yPos, distance, angle) {
 function init() {
     makeCanvasFullScreen();
 
-    var stage = new createjs.Stage("demoCanvas");
+    stage = new createjs.Stage("demoCanvas");
+    stage.enableMouseOver(10);
+    stage.mouseMoveOutside = true;
     if (isBfs) {
         bfsDisplay(stage, rawData, nodeColors, textColor);
     } else {
