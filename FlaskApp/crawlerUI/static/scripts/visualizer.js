@@ -8,7 +8,6 @@ var nodeColors = [
     '#3498DB', // Sky Blue
     '#2980B9'  // Ocean Blue
 ];
-var textColor = '#ECF0F1'; // Ice White
 var colorSwitch = true;
 var stage;
 
@@ -28,11 +27,10 @@ function resizeCanvas(width, height) {
  * @param {object} page A parsed, individual page returned from the crawler.
  * @param {string} color A hexadecimal color string for the node background
  *     color.
- * @param {string} textColor A hexadecimal color string for the text color.
  * @return {Container} A container object containing circle and text
  *     children.
  */
-function makeNode(page, color, textColor) {
+function makeNode(page, color) {
     /**
      * An event handler to open the associated webpage on click.
      * @param {Event} event The event object supplied to the handler.
@@ -84,9 +82,8 @@ function makeNode(page, color, textColor) {
  * @param {Stage} stage The stage object associated with the canvas.
  * @param {Array} pages An ordered array of page objects.
  * @param {Array} nodeColors An array of hexadecimal color strings.
- * @param {String} textColor A hexadecimal color string
  */
-function dfsDisplay(stage, pages, nodeColors, textColor) {
+function dfsDisplay(stage, pages, nodeColors) {
     var xPos = 170;
     var yPos = 250;
     var colorIdx = 0;
@@ -97,7 +94,7 @@ function dfsDisplay(stage, pages, nodeColors, textColor) {
      */
     function addNodes() {
         if (pageIdx < pages.length) {
-            var node = makeNode(pages[pageIdx], nodeColors[colorIdx], textColor);
+            var node = makeNode(pages[pageIdx], nodeColors[colorIdx]);
             node.x = xPos;
             node.y = yPos;
             stage.addChild(node);
@@ -118,47 +115,72 @@ function dfsDisplay(stage, pages, nodeColors, textColor) {
 /**
  * Draws a breadth-first search visualization to the document canvas.
  * @param {Stage} stage The stage object associated with the canvas.
- * @param {object} pages The parsed JSON page data.
+ * @param {NAryTree} pages An N-ary tree of the data.
  * @param {Array} nodeColors An array of hexadecimal color strings.
- * @param {String} textColor A hexadecimal color string
  */
-function bfsDisplay(stage, pages, nodeColors, textColor) {
-    var xPos = window.innerWidth / 2;
-    var yPos = window.innerHeight / 2;
+function bfsDisplay(stage, pages, nodeColors) {
+    var xPos = 180;
+    var yPos = 180;
     var colorIdx = 0;
-    var pageIdx = 0;
-    var childIdx = 0;
-    var children = pages['visited'].length;
-    var angleOffset = (2 * Math.PI) / children;
+    var currentPage = null;
+    var childrenPrinted = 0;
+    var subTreeNodeCounts = [];
+    var children = [pages.root];
+    var angleOffset;
 
     /**
      * Draws the next node to the canvas.
      */
     function addNodes() {
-        if (pageIdx == 0) {
-            var node = makeNode(pages['visited'][pageIdx], nodeColors[colorIdx], textColor);
+        currentPage = children.shift();
+        if (currentPage == pages.root) {
+            var node = makeNode(currentPage.element, nodeColors[colorIdx]);
             node.x = xPos;
             node.y = yPos;
             stage.addChild(node);
             stage.update();
 
-            pageIdx += 1;
-            colorIdx += 1;
-            if (colorIdx >= nodeColors.length)
-            colorIdx = 0;
+            enqueueChildren();
+            angleOffset = (Math.PI / 2.0) / subTreeNodeCounts[0];
+            updateColor();
 
-        } else if (pageIdx < pages['visited'].length) {
-            var node = makeNode(pages['visited'][pageIdx], nodeColors[colorIdx], textColor);
-            calcPolarToCartesianCoords(node, xPos, yPos, 250, angleOffset * childIdx);
+        } else if (children.length > 0 && childrenPrinted < subTreeNodeCounts[0]) {
+            enqueueChildren();
+
+            var node = makeNode(currentPage.element, nodeColors[colorIdx]);
+            var angle = (angleOffset * childrenPrinted);
+            console.log("angle: " + angle + " childrenPrinted: " + childrenPrinted);
+            calcPolarToCartesianCoords(node, xPos, yPos, 650, angle);
             stage.addChild(node);
             stage.update();
 
-            pageIdx += 1;
-            childIdx += 1;
-            colorIdx += 1;
-            if (colorIdx >= nodeColors.length)
-            colorIdx = 0;
+            childrenPrinted++;
+            updateColor();
+        } else if (children.length > 0) {
+            subTreeNodeCounts.shift();
+            angleOffset = (Math.PI / 2.0) / subTreeNodeCounts[0];
+            childrenPrinted = 0;
         }
+    }
+
+    /**
+     * Iterates the color index, looping if necessary.
+     */
+    function updateColor() {
+        colorIdx += 1;
+        if (colorIdx >= nodeColors.length)
+        colorIdx = 0;
+    }
+
+    /**
+     * Enqueues the current node's children and stores the child count for
+     *     that node.
+     */
+    function enqueueChildren() {
+        for (var i = 0; i < currentPage.children.length; i++) {
+            children.push(currentPage.children[i]);
+        }
+        subTreeNodeCounts.push(currentPage.children.length);
     }
 
     createjs.Ticker.interval = 500;
@@ -190,11 +212,11 @@ function init() {
     stage.enableMouseOver(10);
     stage.mouseMoveOutside = true;
     if (isBfs) {
-        // var crawlTree = buildCrawlTree(rawData.visited);
-        bfsDisplay(stage, rawData, nodeColors, textColor);
+        var crawlTree = buildCrawlTree(rawData.visited);
+        bfsDisplay(stage, crawlTree, nodeColors);
     } else {
         var orderedData = orderDfsPages(rawData.visited);
-        dfsDisplay(stage, orderedData, nodeColors, textColor);
+        dfsDisplay(stage, orderedData, nodeColors);
     }
 
 }
@@ -324,6 +346,7 @@ function NAryTree(root) {
  */
 function NAryTreeNode(page) {
     this.element = page;
+    this.parent = null;
     this.children = [];
 
     return this;
@@ -335,6 +358,7 @@ function NAryTreeNode(page) {
  * @returns {Number} The new child count of the node.
  */
 NAryTreeNode.prototype.addChild = function (treeNode) {
+    treeNode.parent = this;
     this.children.push(treeNode);
     return this.children.length;
 };
