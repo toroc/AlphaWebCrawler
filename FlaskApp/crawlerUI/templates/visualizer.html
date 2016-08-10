@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+<h3>{{ message }}</h3>
+<canvas id="demoCanvas" width="1000" height="600" ></canvas>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+<script>
+  {% autoescape false %}
+  var rawData = {{ response }};
+  var isBfs = {{ bfs }};
+  {% endautoescape %}
+</script>
+<script src="/static/scripts/visualizer.js"></script>
+{% endblock %}
