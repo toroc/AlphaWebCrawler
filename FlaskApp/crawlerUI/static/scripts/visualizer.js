@@ -135,6 +135,7 @@ function bfsDisplay(stage, pages, nodeColors) {
     var currentPage = null;
     var childrenPrinted = 0;
     var subTreeNodeCounts = [];
+    var parentCoordinates = [];
     var children = [pages.root];
     var angleOffset;
     var nodesDrawn = false;
@@ -161,6 +162,7 @@ function bfsDisplay(stage, pages, nodeColors) {
             var node = makeNode(currentPage.element, nodeColors[colorIdx]);
             var angle = (angleOffset * childrenPrinted);
             calcPolarToCartesianCoords(node, xPos, yPos, 450, angle);
+            parentCoordinates.push([node.x, node.y]);
             stage.addChild(node);
             stage.update();
 
@@ -168,6 +170,9 @@ function bfsDisplay(stage, pages, nodeColors) {
             updateColor();
         } else if (children.length > 0) {
             subTreeNodeCounts.shift();
+            var parentCoordinate = parentCoordinates.shift();
+            xPos = parentCoordinate[0];
+            yPos = parentCoordinate[1];
             angleOffset = (Math.PI / 2.0) / subTreeNodeCounts[0];
             childrenPrinted = 0;
         } else if (!nodesDrawn){
