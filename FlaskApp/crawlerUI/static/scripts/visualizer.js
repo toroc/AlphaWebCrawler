@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Functions and object prototypes used in generating the
+ *     visualization for the AlphaWebCrawler.
+ * @author taita@oregonstate.edu (Amanda Tait)
+ */
+
 
 /**
  * Global Variables
@@ -10,6 +16,7 @@ var nodeColors = [
 ];
 var colorSwitch = true;
 var stage;
+var labels = [];
 
 /**
  * Resizes the canvas element.
@@ -65,6 +72,7 @@ function makeNode(page, color) {
     text.x = -90;
     text.y = 30;
     text.lineWidth = 180;
+    labels.push(text);
 
     var container = new createjs.Container();
     container.cursor = "pointer";
@@ -105,6 +113,8 @@ function dfsDisplay(stage, pages, nodeColors) {
             colorIdx += 1;
             if (colorIdx >= nodeColors.length)
             colorIdx = 0;
+        } else {
+            addToggleButton();
         }
     }
 
@@ -127,6 +137,7 @@ function bfsDisplay(stage, pages, nodeColors) {
     var subTreeNodeCounts = [];
     var children = [pages.root];
     var angleOffset;
+    var nodesDrawn = false;
 
     /**
      * Draws the next node to the canvas.
@@ -149,8 +160,7 @@ function bfsDisplay(stage, pages, nodeColors) {
 
             var node = makeNode(currentPage.element, nodeColors[colorIdx]);
             var angle = (angleOffset * childrenPrinted);
-            console.log("angle: " + angle + " childrenPrinted: " + childrenPrinted);
-            calcPolarToCartesianCoords(node, xPos, yPos, 650, angle);
+            calcPolarToCartesianCoords(node, xPos, yPos, 450, angle);
             stage.addChild(node);
             stage.update();
 
@@ -160,6 +170,9 @@ function bfsDisplay(stage, pages, nodeColors) {
             subTreeNodeCounts.shift();
             angleOffset = (Math.PI / 2.0) / subTreeNodeCounts[0];
             childrenPrinted = 0;
+        } else if (!nodesDrawn){
+            nodesDrawn = true;
+            addToggleButton();
         }
     }
 
@@ -202,6 +215,37 @@ function calcPolarToCartesianCoords(node, xPos, yPos, distance, angle) {
 }
 
 /**
+ * Adds a label toggle button to the canvas and registers the appropriate
+ *     handler.
+ */
+function addToggleButton() {
+    /**
+     * Toggles the visibility of all labels in the canvas.
+     * @param {Event} event The event object.
+     */
+    function toggleVisiblity(event) {
+        for (var i = 0; i < labels.length; i++) {
+            labels[i].visible = labels[i].visible ? false : true;
+            stage.update();
+        }
+    }
+
+    var rectangle = new createjs.Graphics();
+    rectangle.beginFill(nodeColors[0]).drawRoundRectComplex(20, 20, 100, 50, 3, 3, 3, 3);
+    var button = new createjs.Shape(rectangle);
+    button.cursor = "pointer";
+
+    var text = new createjs.Text("Toggle Labels", "14px Arial", "#ffffff");
+    text.x = 25;
+    text.y = 40;
+
+    stage.addChild(button, text);
+    stage.update();
+
+    button.on("click", toggleVisiblity);
+}
+
+/**
  * Initializes the graphics stage and starts the visualization.
  */
 function init() {
@@ -211,6 +255,7 @@ function init() {
     stage = new createjs.Stage("demoCanvas");
     stage.enableMouseOver(10);
     stage.mouseMoveOutside = true;
+
     if (isBfs) {
         var crawlTree = buildCrawlTree(rawData.visited);
         bfsDisplay(stage, crawlTree, nodeColors);
