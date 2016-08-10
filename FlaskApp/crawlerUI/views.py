@@ -32,7 +32,7 @@ def crawl():
 @app.route('/crawl', methods=['POST'])
 def visualize_crawl():
     form_data = parse_multidict(request.form)
-    crawl_request = requests.post("http://alpha-crawler.appspot.com/", data=form_data, timeout=10.0)
+    crawl_request = requests.post("http://alpha-crawler.appspot.com/", data=form_data, timeout=30.0)
     return render_template(
         'visualizer.html',
         title='Crawled by Post',
