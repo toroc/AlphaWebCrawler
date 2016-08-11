@@ -8,6 +8,7 @@ $(document).ready(function(){
 
 		var past_button = $('<button>').appendTo('#crawlHist');
 		past_button.text("Crawl Again");
+		past_button.addClass('btn btn-primary');
 
 		past_button.click(function(event){
 			var curIndex = sel.val();
