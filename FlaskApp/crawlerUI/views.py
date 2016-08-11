@@ -49,7 +49,6 @@ def about():
         'about.html',
         title='About',
         year=datetime.now().year,
-        message='Your application description page.',
         message2='Dev Team'
     )
 # Add an error handler. This is useful for debugging the live application,
