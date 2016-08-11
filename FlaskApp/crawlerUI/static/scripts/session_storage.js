@@ -1,12 +1,12 @@
 $(document).ready(function(){
 	var crawls = JSON.parse(localStorage.getItem("savedCrawls"));
 	if (crawls != null){
-		var sel = $('<select>').appendTo('#crawlHist');
+		var sel = $('<select>').appendTo('.panel-body');
 		for (c in crawls){
 			sel.append($("<option>").text("URL:"+crawls[c]['url']+ " Crawl Type: "+crawls[c]['crawl-type']).attr('value', c));
 		}
 
-		var past_button = $('<button>').appendTo('#crawlHist');
+		var past_button = $('<button>').appendTo('.panel-body');
 		past_button.text("Crawl Again");
 		past_button.addClass('btn btn-primary');
 
